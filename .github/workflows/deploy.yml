@@ -7,6 +7,7 @@ on:
     branches: [ main ]
 
 jobs:
+  # Job 1: Test
   test:
     runs-on: ubuntu-latest
     steps:
@@ -17,52 +18,28 @@ jobs:
         with:
           node-version: '18'
 
-      - name: Cache npm dependencies
-        uses: actions/cache@v4
-        with:
-          path: ~/.npm
-          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-node-
-
-      - name: Install server dependencies
+      - name: Install Server Dependencies
         run: |
           cd server
           npm install
 
-      - name: Install client dependencies
+      - name: Install Client Dependencies
         run: |
           cd client
           npm install
 
-      - name: Build client
+      - name: Build Client
         run: |
           cd client
           npm run build
 
-      - name: Upload client build artifact
-        uses: actions/upload-artifact@v3
-        with:
-          name: client-build
-          path: client/build
-
+  # Job 2: Deploy (after test passes)
   deploy:
     needs: test
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    if: github.ref == 'refs/heads/main'
     steps:
       - uses: actions/checkout@v3
 
-      - name: Download client build artifact
-        uses: actions/download-artifact@v3
-        with:
-          name: client-build
-          path: client/build
-
       - name: Deploy to Vercel
-        uses: amondnet/vercel-action@v20
-        with:
-          vercel-token: ${{ secrets.VERCEL_TOKEN }}
-          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
-          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
-          vercel-args: '--prod'
+        run: echo "Deployment step - Vercel connect karenge"
