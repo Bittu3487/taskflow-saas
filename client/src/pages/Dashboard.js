@@ -10,6 +10,17 @@ function Dashboard() {
   const [priority, setPriority] = useState('medium')
   const navigate = useNavigate()
 
+  const styles = {
+    button: {
+      padding: '10px 20px',
+      border: 'none',
+      borderRadius: '5px',
+      cursor: 'pointer',
+      fontSize: '16px',
+      margin: '5px'
+    }
+  }
+
   const user = JSON.parse(localStorage.getItem('user'))
   const token = localStorage.getItem('token')
 
@@ -41,6 +52,21 @@ function Dashboard() {
       setTitle('')
       setDescription('')
       fetchTasks()
+    } catch (err) {
+      console.log(err)
+    }
+  }
+
+  const aiSuggest = async () => {
+    if (!title) return alert('Pehle title likho!')
+    try {
+      const res = await axios.post(
+        'http://localhost:5000/api/ai/suggest',
+        { title },
+        { headers }
+      )
+      setDescription(res.data.description)
+      setPriority(res.data.priority)
     } catch (err) {
       console.log(err)
     }
@@ -144,6 +170,12 @@ function Dashboard() {
             <option value="medium">Medium Priority</option>
             <option value="high">High Priority</option>
           </select>
+          <button
+            style={{...styles.button, background: '#7c3aed'}}
+            onClick={aiSuggest}
+          >
+            🤖 AI Suggest
+          </button>
           <button className="button button-primary" onClick={createTask}>
             Add Task ➕
           </button>
