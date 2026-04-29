@@ -1,0 +1,227 @@
+/* Modern Dark Button Component Styles */
+
+.button-dark {
+  padding: 14px 20px;
+  border-radius: 12px;
+  border: 2px solid transparent;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 0.95rem;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  position: relative;
+  overflow: hidden;
+  letter-spacing: 0.01em;
+}
+
+.button-dark::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.1);
+  transition: left 0.3s ease;
+  z-index: -1;
+}
+
+.button-dark:hover::before {
+  left: 0;
+}
+
+/* Primary Variant - Dark Charcoal */
+.button-dark.button-dark-primary {
+  background: linear-gradient(135deg, #1f2937 0%, #111827 100%);
+  color: #ffffff;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.32),
+              inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  border: 2px solid rgba(31, 41, 55, 0.8) !important;
+}
+
+.button-dark.button-dark-primary:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.4),
+              inset 0 1px 0 rgba(255, 255, 255, 0.12);
+  background: linear-gradient(135deg, #2d3748 0%, #1a202c 100%);
+}
+
+.button-dark.button-dark-primary:active {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.28),
+              inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+/* Accent Variant - Purple */
+.button-dark.button-dark-accent {
+  background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%);
+  color: #ffffff;
+  box-shadow: 0 8px 24px rgba(124, 58, 237, 0.3),
+              inset 0 1px 0 rgba(255, 255, 255, 0.12);
+  border: 2px solid rgba(124, 58, 237, 0.6) !important;
+}
+
+.button-dark.button-dark-accent:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 32px rgba(124, 58, 237, 0.4),
+              inset 0 1px 0 rgba(255, 255, 255, 0.16);
+  background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+}
+
+.button-dark.button-dark-accent:active {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(124, 58, 237, 0.25),
+              inset 0 1px 0 rgba(255, 255, 255, 0.12);
+}
+
+/* Subtle Button - Works in both light and dark modes */
+.button-dark.button-dark-subtle {
+  background: linear-gradient(135deg, #e5e7eb 0%, #d1d5db 100%);
+  color: #374151;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1),
+              inset 0 1px 0 rgba(255, 255, 255, 0.6);
+  border: 2px solid rgba(75, 85, 99, 0.2) !important;
+  font-weight: 700;
+}
+
+.button-dark.button-dark-subtle:hover {
+  transform: translateY(-2px);
+  background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15),
+              inset 0 1px 0 rgba(255, 255, 255, 0.8);
+  border-color: rgba(55, 65, 81, 0.4) !important;
+}
+
+.button-dark.button-dark-subtle:active {
+  transform: translateY(0);
+  background: linear-gradient(135deg, #e5e7eb 0%, #d1d5db 100%);
+}
+
+/* Danger Variant - Red */
+.button-dark.button-dark-danger {
+  background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+  color: #ffffff;
+  box-shadow: 0 8px 24px rgba(220, 38, 38, 0.28),
+              inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  border: 2px solid rgba(220, 38, 38, 0.5) !important;
+}
+
+.button-dark.button-dark-danger:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 32px rgba(220, 38, 38, 0.35),
+              inset 0 1px 0 rgba(255, 255, 255, 0.14);
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+}
+
+.button-dark.button-dark-danger:active {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(220, 38, 38, 0.25),
+              inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+/* Success Variant - Green */
+.button-dark.button-dark-success {
+  background: linear-gradient(135deg, #059669 0%, #047857 100%);
+  color: #ffffff;
+  box-shadow: 0 8px 24px rgba(5, 150, 105, 0.28),
+              inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  border: 2px solid rgba(5, 150, 105, 0.5) !important;
+}
+
+.button-dark.button-dark-success:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 32px rgba(5, 150, 105, 0.35),
+              inset 0 1px 0 rgba(255, 255, 255, 0.14);
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+}
+
+.button-dark.button-dark-success:active {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(5, 150, 105, 0.25),
+              inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+/* Size Variants */
+.button-dark.button-dark-sm {
+  padding: 8px 12px;
+  font-size: 0.85rem;
+  border-radius: 8px;
+}
+
+.button-dark.button-dark-lg {
+  padding: 16px 28px;
+  font-size: 1.05rem;
+  border-radius: 14px;
+}
+
+/* Icon Only Button */
+.button-dark.button-dark-icon {
+  padding: 10px;
+  border-radius: 10px;
+  min-width: auto;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+}
+
+/* Icon Styling */
+.button-dark .button-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+}
+
+/* Loading State */
+.button-dark.loading {
+  pointer-events: none;
+  opacity: 0.75;
+}
+
+.button-spinner {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top-color: #ffffff;
+  border-radius: 50%;
+  animation: button-spin 0.6s linear infinite;
+  margin-right: 6px;
+}
+
+@keyframes button-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Disabled State */
+.button-dark:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none !important;
+}
+
+.button-dark:disabled:hover {
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+  .button-dark {
+    padding: 12px 16px;
+    font-size: 0.9rem;
+    border-radius: 10px;
+  }
+
+  .button-dark.button-dark-lg {
+    padding: 14px 20px;
+    font-size: 0.95rem;
+  }
+}

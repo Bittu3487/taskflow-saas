@@ -222,22 +222,94 @@ function Dashboard() {
             </span>
           )}
           <button
-            style={{
-              padding: '8px 15px',
-              background: darkMode ? '#f59e0b' : '#1a1a2e',
-              color: 'white',
-              border: 'none',
-              borderRadius: '5px',
-              cursor: 'pointer',
-              marginRight: '10px'
-            }}
+            className="button-dark button-dark-accent button-dark-sm"
+            onClick={() => navigate('/analytics')}
+          >
+            📊 Analytics
+          </button>
+          <button
+            className="button-dark button-dark-subtle button-dark-sm"
             onClick={toggleTheme}
           >
             {darkMode ? '☀️ Light' : '🌙 Dark'}
           </button>
-          <button className="button button-secondary" style={{ background: darkMode ? 'rgba(255, 255, 255, 0.18)' : '#ddd', color: darkMode ? 'white' : '#000' }} onClick={logout}>Logout</button>
+          <button className="button-dark button-dark-danger button-dark-sm" onClick={logout}>
+            🚪 Logout
+          </button>
         </div>
       </header>
+
+      {/* Analytics Section */}
+      <section className="analytics-section">
+        <div className="analytics-header">
+          <h2>Dashboard Analytics</h2>
+          <p>Track your productivity at a glance</p>
+        </div>
+
+        {/* Stat Cards Grid */}
+        <div className="stat-cards-grid">
+          {/* Total Tasks Card */}
+          <div className="stat-card">
+            <div className="stat-icon">📊</div>
+            <div className="stat-content">
+              <h3 className="stat-title">Total Tasks</h3>
+              <p className="stat-value">{tasks.length}</p>
+            </div>
+          </div>
+
+          {/* Completed Card */}
+          <div className="stat-card stat-card-success">
+            <div className="stat-icon">✅</div>
+            <div className="stat-content">
+              <h3 className="stat-title">Completed</h3>
+              <p className="stat-value">{statusCounts.done}</p>
+            </div>
+          </div>
+
+          {/* In Progress Card */}
+          <div className="stat-card stat-card-warning">
+            <div className="stat-icon">⚡</div>
+            <div className="stat-content">
+              <h3 className="stat-title">In Progress</h3>
+              <p className="stat-value">{statusCounts.inprogress}</p>
+            </div>
+          </div>
+
+          {/* Pending Card */}
+          <div className="stat-card stat-card-info">
+            <div className="stat-icon">📋</div>
+            <div className="stat-content">
+              <h3 className="stat-title">Pending</h3>
+              <p className="stat-value">{statusCounts.todo}</p>
+            </div>
+          </div>
+        </div>
+
+        {/* Progress Bar Section */}
+        <div className="progress-section">
+          <div className="progress-header">
+            <span className="progress-label">
+              Completion Rate: {tasks.length > 0 ? Math.round((statusCounts.done / tasks.length) * 100) : 0}%
+            </span>
+          </div>
+          <div className="progress-bar-container">
+            <div 
+              className="progress-bar-fill"
+              style={{
+                width: `${tasks.length > 0 ? (statusCounts.done / tasks.length) * 100 : 0}%`
+              }}
+            />
+          </div>
+        </div>
+
+        {/* Overdue Tasks Alert */}
+        {overdueCount > 0 && (
+          <div className="overdue-alert">
+            <span className="overdue-icon">🔴</span>
+            <span className="overdue-text">Overdue Tasks: <strong>{overdueCount}</strong></span>
+          </div>
+        )}
+      </section>
 
       <section className="dashboard-panel">
         <div className="panel-heading">
@@ -286,13 +358,13 @@ function Dashboard() {
             <option value="high">High Priority</option>
           </select>
           <button
-            style={{...styles.button, background: '#7c3aed'}}
+            className="button-dark button-dark-subtle"
             onClick={aiSuggest}
           >
             🤖 AI Suggest
           </button>
-          <button className="button button-primary" onClick={createTask}>
-            Add Task ➕
+          <button className="button-dark button-dark-accent" onClick={createTask}>
+            ➕ Add Task
           </button>
         </div>
       </section>
