@@ -134,6 +134,10 @@
   transform: translateY(-1px);
 }
 
+.input::placeholder {
+  color: #666;
+}
+
 .button {
   padding: 16px 18px;
   border-radius: 16px;

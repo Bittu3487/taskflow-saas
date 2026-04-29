@@ -16,11 +16,13 @@ router.get('/', auth, async (req, res) => {
 // Create task
 router.post('/', auth, async (req, res) => {
   try {
-    const { title, description, priority } = req.body
+    const { title, description, priority, dueDate, assignedTo } = req.body
     const task = new Task({
       title,
       description,
       priority,
+      dueDate,
+      assignedTo,
       user: req.userId
     })
     await task.save()

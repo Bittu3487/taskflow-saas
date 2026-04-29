@@ -19,6 +19,12 @@ const TaskSchema = new mongoose.Schema({
     enum: ['low', 'medium', 'high'],
     default: 'medium'
   },
+  dueDate: {
+    type: Date
+  },
+  assignedTo: {
+    type: String // email of the assignee
+  },
   user: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
