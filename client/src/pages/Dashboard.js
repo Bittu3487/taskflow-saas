@@ -12,6 +12,7 @@ function Dashboard() {
   const [priority, setPriority] = useState('medium')
   const [dueDate, setDueDate] = useState('')
   const [assignedTo, setAssignedTo] = useState('')
+  const [filter, setFilter] = useState('all')
   const navigate = useNavigate()
 
   const styles = {
@@ -76,6 +77,7 @@ function Dashboard() {
   }
 
   const user = JSON.parse(localStorage.getItem('user'))
+  const userEmail = localStorage.getItem('userEmail') || user?.email || ''
   const token = localStorage.getItem('token')
 
   const headers = { Authorization: `Bearer ${token}` }
@@ -84,7 +86,7 @@ function Dashboard() {
   const fetchTasks = useCallback(async () => {
     try {
       const responseHeaders = { Authorization: `Bearer ${token}` }
-      const res = await axios.get('http://localhost:5000/api/tasks', { headers: responseHeaders })
+      const res = await axios.get('https://taskflow-saas-rczc.onrender.com/api/tasks', { headers: responseHeaders })
       setTasks(res.data)
     } catch (err) {
       console.log(err)
@@ -99,10 +101,15 @@ function Dashboard() {
   const createTask = async () => {
     if (!title) return
     try {
-      const taskData = { title, description, priority }
+      const taskData = {
+        title,
+        description,
+        priority,
+        createdBy: userEmail
+      }
       if (dueDate) taskData.dueDate = dueDate
       if (assignedTo) taskData.assignedTo = assignedTo
-      await axios.post('http://localhost:5000/api/tasks', taskData, { headers })
+      await axios.post('https://taskflow-saas-rczc.onrender.com/api/tasks', taskData, { headers })
       setTitle('')
       setDescription('')
       setDueDate('')
@@ -117,7 +124,7 @@ function Dashboard() {
     if (!title) return alert('Pehle title likho!')
     try {
       const res = await axios.post(
-        'http://localhost:5000/api/ai/suggest',
+        'https://taskflow-saas-rczc.onrender.com/api/ai/suggest',
         { title },
         { headers }
       )
@@ -131,7 +138,7 @@ function Dashboard() {
   // Status update karo
   const updateStatus = async (id, status) => {
     try {
-      await axios.put(`http://localhost:5000/api/tasks/${id}`,
+      await axios.put(`https://taskflow-saas-rczc.onrender.com/api/tasks/${id}`,
         { status },
         { headers }
       )
@@ -144,7 +151,7 @@ function Dashboard() {
   // Task delete karo
   const deleteTask = async (id) => {
     try {
-      await axios.delete(`http://localhost:5000/api/tasks/${id}`, { headers })
+      await axios.delete(`https://taskflow-saas-rczc.onrender.com/api/tasks/${id}`, { headers })
       fetchTasks()
     } catch (err) {
       console.log(err)
@@ -163,8 +170,15 @@ function Dashboard() {
     done: '✅ Done'
   }
 
+  const filteredTasks = tasks.filter((task) => {
+    // Filtering logic: show all, tasks created by me, or tasks assigned to me
+    if (filter === 'my') return task.createdBy?.toLowerCase() === userEmail?.toLowerCase()
+    if (filter === 'assigned') return task.assignedTo?.toLowerCase() === userEmail?.toLowerCase()
+    return true
+  })
+
   const statusCounts = { todo: 0, inprogress: 0, done: 0 }
-  tasks.forEach((task) => {
+  filteredTasks.forEach((task) => {
     if (statusCounts[task.status] !== undefined) {
       statusCounts[task.status] += 1
     }
@@ -189,7 +203,7 @@ function Dashboard() {
     return 'future'
   }
 
-  const overdueCount = tasks.filter(task => {
+  const overdueCount = filteredTasks.filter(task => {
     const status = getDueDateStatus(task.dueDate)
     return status === 'overdue' && task.status !== 'done'
   }).length
@@ -239,6 +253,36 @@ function Dashboard() {
         </div>
       </header>
 
+      <div className="filter-toolbar" style={{
+        display: 'flex',
+        gap: '10px',
+        flexWrap: 'wrap',
+        margin: '20px 0',
+        alignItems: 'center'
+      }}>
+        {[
+          { key: 'all', label: 'All Tasks' },
+          { key: 'my', label: 'My Tasks' },
+          { key: 'assigned', label: 'Assigned to Me' }
+        ].map(({ key, label }) => (
+          <button
+            key={key}
+            type="button"
+            onClick={() => setFilter(key)}
+            style={{
+              ...styles.button,
+              background: filter === key ? colors.primary : 'transparent',
+              color: filter === key ? '#ffffff' : colors.text,
+              border: `1px solid ${filter === key ? colors.primary : colors.border}`,
+              boxShadow: 'none',
+              transition: 'all 0.2s ease'
+            }}
+          >
+            {label}
+          </button>
+        ))}
+      </div>
+
       {/* Analytics Section */}
       <section className="analytics-section">
         <div className="analytics-header">
@@ -253,7 +297,7 @@ function Dashboard() {
             <div className="stat-icon">📊</div>
             <div className="stat-content">
               <h3 className="stat-title">Total Tasks</h3>
-              <p className="stat-value">{tasks.length}</p>
+              <p className="stat-value">{filteredTasks.length}</p>
             </div>
           </div>
 
@@ -289,14 +333,14 @@ function Dashboard() {
         <div className="progress-section">
           <div className="progress-header">
             <span className="progress-label">
-              Completion Rate: {tasks.length > 0 ? Math.round((statusCounts.done / tasks.length) * 100) : 0}%
+              Completion Rate: {filteredTasks.length > 0 ? Math.round((statusCounts.done / filteredTasks.length) * 100) : 0}%
             </span>
           </div>
           <div className="progress-bar-container">
             <div 
               className="progress-bar-fill"
               style={{
-                width: `${tasks.length > 0 ? (statusCounts.done / tasks.length) * 100 : 0}%`
+                width: `${filteredTasks.length > 0 ? (statusCounts.done / filteredTasks.length) * 100 : 0}%`
               }}
             />
           </div>
@@ -377,58 +421,68 @@ function Dashboard() {
               <span className="column-badge">{statusCounts[status]}</span>
             </div>
 
-            {tasks
+            {filteredTasks
               .filter((task) => task.status === status)
-              .map((task) => (
-                <article key={task._id} className="task-card" style={styles.card}>
-                  <div className="priority-block">
-                    <span className={`priority-pill ${task.priority}`}>
-                      <span className="priority-dot" />
-                      {priorityText[task.priority]}
-                    </span>
-                  </div>
-
-                  <h4>{task.title}</h4>
-                  <p>{task.description}</p>
-                  {task.dueDate && (
-                    <div style={{
-                      display: 'inline-block',
-                      padding: '2px 6px',
-                      borderRadius: '12px',
-                      fontSize: '12px',
-                      fontWeight: 'bold',
-                      margin: '4px 0',
-                      backgroundColor: getDueDateStatus(task.dueDate) === 'overdue' ? '#ef4444' :
-                                       getDueDateStatus(task.dueDate) === 'today' ? '#f97316' : 'transparent',
-                      color: getDueDateStatus(task.dueDate) === 'future' ? '#22c55e' : 'white'
-                    }}>
-                      {getDueDateStatus(task.dueDate) === 'overdue' ? '🔴 Overdue!' :
-                       getDueDateStatus(task.dueDate) === 'today' ? '🟡 Due Today!' :
-                       `🟢 Due: ${new Date(task.dueDate).toLocaleDateString()}`}
+              .map((task) => {
+                const isAssignedToMe = task.assignedTo?.toLowerCase() === userEmail?.toLowerCase()
+                return (
+                  <article
+                    key={task._id}
+                    className="task-card"
+                    style={{
+                      ...styles.card,
+                      border: isAssignedToMe ? '2px solid #22c55e' : `1px solid ${darkMode ? '#4b5563' : '#d1d5db'}`,
+                      boxShadow: isAssignedToMe ? '0 0 0 2px rgba(34,197,94,0.15)' : styles.card.boxShadow,
+                      transition: 'all 0.25s ease'
+                    }}
+                  >
+                    <div className="priority-block">
+                      <span className={`priority-pill ${task.priority}`}>
+                        <span className="priority-dot" />
+                        {priorityText[task.priority]}
+                      </span>
                     </div>
-                  )}
-                  {task.assignedTo && (
-                    <p>Assigned to: {task.assignedTo}</p>
-                  )}
 
-                  <div className="task-card-footer">
-                    <div className="card-actions">
-                      <select
-                        className="status-select"
-                        value={task.status}
-                        onChange={(e) => updateStatus(task._id, e.target.value)}
-                      >
-                        <option value="todo">Todo</option>
-                        <option value="inprogress">In Progress</option>
-                        <option value="done">Done</option>
-                      </select>
-                      <button className="delete-btn" onClick={() => deleteTask(task._id)}>
-                        Delete
-                      </button>
+                    <h4>{task.title}</h4>
+                    <p>{task.description}</p>
+                    {task.dueDate && (
+                      <div style={{
+                        display: 'inline-block',
+                        padding: '2px 6px',
+                        borderRadius: '12px',
+                        fontSize: '12px',
+                        fontWeight: 'bold',
+                        margin: '4px 0',
+                        backgroundColor: getDueDateStatus(task.dueDate) === 'overdue' ? '#ef4444' :
+                                         getDueDateStatus(task.dueDate) === 'today' ? '#f97316' : 'transparent',
+                        color: getDueDateStatus(task.dueDate) === 'future' ? '#22c55e' : 'white'
+                      }}>
+                        {getDueDateStatus(task.dueDate) === 'overdue' ? '🔴 Overdue!' :
+                         getDueDateStatus(task.dueDate) === 'today' ? '🟡 Due Today!' :
+                         `🟢 Due: ${new Date(task.dueDate).toLocaleDateString()}`}
+                      </div>
+                    )}
+                    <p>👤 Assigned to: {task.assignedTo || 'Unassigned'}</p>
+
+                    <div className="task-card-footer">
+                      <div className="card-actions">
+                        <select
+                          className="status-select"
+                          value={task.status}
+                          onChange={(e) => updateStatus(task._id, e.target.value)}
+                        >
+                          <option value="todo">Todo</option>
+                          <option value="inprogress">In Progress</option>
+                          <option value="done">Done</option>
+                        </select>
+                        <button className="delete-btn" onClick={() => deleteTask(task._id)}>
+                          Delete
+                        </button>
+                      </div>
                     </div>
-                  </div>
-                </article>
-              ))}
+                  </article>
+                )
+              })}
           </section>
         ))}
       </div>

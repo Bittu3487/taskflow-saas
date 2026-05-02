@@ -82,7 +82,7 @@ function Analytics() {
     setLoading(true)
     setError('')
     try {
-      const response = await axios.get('http://localhost:5000/api/tasks', { headers })
+      const response = await axios.get('https://taskflow-saas-rczc.onrender.com/api/tasks', { headers })
       setTasks(response.data)
     } catch (err) {
       setError('Failed to load task analytics')
