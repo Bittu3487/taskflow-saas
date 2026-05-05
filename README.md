@@ -10,7 +10,7 @@
 
 ## 🌐 Live Demo
 
-🔗 **Frontend:** [taskflow-saas.vercel.app](https://taskflow-saas-m5acawknq-debashisgoswami159-gmailcoms-projects.vercel.app/)  
+🔗 **Frontend:** [taskflow-saas.vercel.app](https://taskflow-saas-opal.vercel.app/)  
 🔗 **Backend API:** [taskflow-server.onrender.com](https://taskflow-saas-rczc.onrender.com/)  
 🔗 **GitHub:** [github.com/Bittu3487/taskflow-saas](https://github.com/Bittu3487/taskflow-saas)
 
