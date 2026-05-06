@@ -22,8 +22,13 @@ const TaskSchema = new mongoose.Schema({
   dueDate: {
     type: Date
   },
+  createdBy: {
+    type: String,
+    required: true
+  },
   assignedTo: {
-    type: String // email of the assignee
+    type: String,
+    default: ''
   },
   user: {
     type: mongoose.Schema.Types.ObjectId,

@@ -6,10 +6,13 @@ import './Login.css'
 function Login() {
   const [form, setForm] = useState({ email: '', password: '' })
   const [error, setError] = useState('')
+  const [loading, setLoading] = useState(false)
   const navigate = useNavigate()
 
   const handleSubmit = async (e) => {
     e.preventDefault()
+    setLoading(true)
+    setError('')
     try {
       const res = await axios.post('https://taskflow-saas-rczc.onrender.com/api/auth/login', form)
       localStorage.setItem('token', res.data.token)
@@ -17,6 +20,7 @@ function Login() {
       localStorage.setItem('userEmail', res.data.user.email)
       navigate('/dashboard')
     } catch (err) {
+      setLoading(false)
       setError('Invalid credentials')
     }
   }
@@ -54,8 +58,15 @@ function Login() {
             />
           </div>
 
-          <button className="button" type="submit">
-            Sign In
+          <button className="button" type="submit" disabled={loading}>
+            {loading ? (
+              <>
+                <span className="spinner"></span>
+                Logging in...
+              </>
+            ) : (
+              'Sign In'
+            )}
           </button>
         </form>
 

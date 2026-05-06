@@ -6,7 +6,7 @@ const auth = require('../middleware/auth')
 // Get all tasks
 router.get('/', auth, async (req, res) => {
   try {
-    const tasks = await Task.find({ user: req.userId })
+    const tasks = await Task.find().sort({ createdAt: -1 })
     res.json(tasks)
   } catch (err) {
     res.status(500).json({ message: 'Server error' })
@@ -22,6 +22,7 @@ router.post('/', auth, async (req, res) => {
       description,
       priority,
       dueDate,
+      createdBy: req.userEmail,
       assignedTo,
       user: req.userId
     })
@@ -35,11 +36,23 @@ router.post('/', auth, async (req, res) => {
 // Update task
 router.put('/:id', auth, async (req, res) => {
   try {
-    const task = await Task.findByIdAndUpdate(
-      req.params.id,
-      req.body,
+    const { title, description, priority, dueDate, assignedTo, status } = req.body
+    const task = await Task.findOneAndUpdate(
+      {
+        _id: req.params.id,
+        $or: [
+          { user: req.userId },
+          { assignedTo: req.userEmail }
+        ]
+      },
+      { title, description, priority, dueDate, assignedTo, status },
       { new: true }
     )
+
+    if (!task) {
+      return res.status(404).json({ message: 'Task not found' })
+    }
+
     res.json(task)
   } catch (err) {
     res.status(500).json({ message: 'Server error' })

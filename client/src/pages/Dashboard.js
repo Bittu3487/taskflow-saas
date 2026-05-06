@@ -13,6 +13,7 @@ function Dashboard() {
   const [dueDate, setDueDate] = useState('')
   const [assignedTo, setAssignedTo] = useState('')
   const [filter, setFilter] = useState('all')
+  const [loading, setLoading] = useState(true)
   const navigate = useNavigate()
 
   const styles = {
@@ -88,8 +89,10 @@ function Dashboard() {
       const responseHeaders = { Authorization: `Bearer ${token}` }
       const res = await axios.get('https://taskflow-saas-rczc.onrender.com/api/tasks', { headers: responseHeaders })
       setTasks(res.data)
+      setLoading(false)
     } catch (err) {
       console.log(err)
+      setLoading(false)
     }
   }, [token])
 
@@ -210,6 +213,14 @@ function Dashboard() {
 
   return (
     <div className="dashboard-page" style={styles.container}>
+      {loading && (
+        <div className="dashboard-loading-overlay">
+          <div className="loading-spinner-container">
+            <div className="large-spinner"></div>
+            <p>Loading your dashboard...</p>
+          </div>
+        </div>
+      )}
       <header className="dashboard-header" style={styles.header}>
         <div>
           <p className="eyebrow">Daily productivity powered by TaskFlow</p>
